@@ -25,7 +25,7 @@ TS01_DetectorConstruction::TS01_DetectorConstruction(bool fiber, int n, G4double
 
 TS01_DetectorConstruction::~TS01_DetectorConstruction()
 {
-    for (auto fiber : fibers) delete fiber;
+    for (auto const &fiber : fibers) delete fiber;
 }
 
 void TS01_DetectorConstruction::ConstructMaterials()
