@@ -1,0 +1,7 @@
+/gps/pos/type   Surface
+/gps/pos/shape  Sphere
+/gps/pos/radius 1.0 m
+/gps/pos/centre 0 0 0 m
+/gps/ang/type   iso
+/gps/energy     1 MeV
+/gps/particle   e-
