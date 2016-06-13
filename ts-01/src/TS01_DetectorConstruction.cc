@@ -10,6 +10,9 @@
 #include "G4LogicalBorderSurface.hh"
 #include "G4VisAttributes.hh"
 #include "TS01_PhotoSD.hh"
+// New code
+#include "G4Material.hh"
+#include "G4NistManager.hh" 
 
 TS01_DetectorConstruction::TS01_DetectorConstruction(bool fiber, int n, G4double dia, G4double r) :
     num_fiber(n),
@@ -30,47 +33,33 @@ TS01_DetectorConstruction::~TS01_DetectorConstruction()
 
 void TS01_DetectorConstruction::ConstructMaterials()
 {
+    // Necessary Elements
     G4Element* H  = new G4Element("Hydrogen" , "H" , 1.0 , 1.01 *g/mole);
-    G4Element* B  = new G4Element("Boron"    , "B" , 5.0 , 10.8 *g/mole);
     G4Element* C  = new G4Element("Carbon"   , "C" , 6.0 , 12.00*g/mole);
-    G4Element* N  = new G4Element("Nitrogen" , "N" , 7.0 , 14.00*g/mole);
     G4Element* O  = new G4Element("Oxygen"   , "O" , 8.0 , 16.0 *g/mole);
     G4Element* F  = new G4Element("Fluorine" , "F" , 9.0 , 19.0 *g/mole);
-    G4Element* Na = new G4Element("Sodium"   , "Na", 11.0, 22.99*g/mole);
-    G4Element* Al = new G4Element("Aluminum" , "Al", 13.0, 26.98*g/mole);
     G4Element* Si = new G4Element("Silicon"  , "Si", 14.0, 28.09*g/mole);
-    G4Element* K  = new G4Element("Potassium", "K" , 19.0, 39.10*g/mole);
-    
+    G4Element* Al = new G4Element("Aluminum" , "Al", 13.0, 26.98*g/mole);
+
+    //Vacuum
     vacuum = new G4Material("Vacuum", 1.0, 1.0*g/mole, 1E-08*g/cm3);
-    
-    air = new G4Material("Air", 0.5*0.0012*g/cm3, 2);
-    air->AddElement(O, 0.76);
-    air->AddElement(N, 0.24);
-    
+
+    //Ice
     ice = new G4Material("Ice", 0.9167*g/cm3, 2);
     ice->AddElement(H, 2);
     ice->AddElement(O, 1);
-    
+
+    //Gel
     gel = new G4Material("Silicone RTV Gel", 0.98*g/cm3, 4);
     gel->AddElement(H, 5);
     gel->AddElement(C, 6);
     gel->AddElement(O, 1);
     gel->AddElement(Si, 1);
-    
-    glass = new G4Material("Glass", 2.23*g/cm3, 6);
-    glass->AddElement(B , 0.04);
-    glass->AddElement(O , 0.54);
-    glass->AddElement(Na, 0.0282);
-    glass->AddElement(Al, 0.0164);
-    glass->AddElement(Si, 0.377);
-    glass->AddElement(K , 0.0033);
-    
-    polystyrene = new G4Material("Polystyrene", 1.05*g/cm3, 2);
-    polystyrene->AddElement(H, 8);
-    polystyrene->AddElement(C, 8);
-    
+
+    //Aluminum
     al = new G4Material("Aluminum", 13.0, 26.98*g/mole, 2.7*CLHEP::g/CLHEP::cm3);
-    
+
+    //Fiber (PMMA)
     pmma = new G4Material("PMMA", 1.19*g/cm3, 3);
     pmma->AddElement(H, 8);
     pmma->AddElement(O, 2);
@@ -79,6 +68,19 @@ void TS01_DetectorConstruction::ConstructMaterials()
     fp = new G4Material("FP", 1.46*g/cm3, 2);
     fp->AddElement(C, 2);
     fp->AddElement(F, 4);
+
+    // Materials found using NIST Database
+    G4NistManager* man = G4NistManager::Instance();
+
+    //Air
+    G4Material* Air = man->FindOrBuildMaterial("G4_AIR");
+
+    // Polystyrene
+    G4Material* Polystyrene = man->FindOrBuildMaterial("G4_POLYSTYRENE");
+
+    // Glass
+    G4Material* Glass = man->FindOrBuildMaterial("G4_Pyrex_Glass");
+	
 }
 
 void TS01_DetectorConstruction::ConstructFibers(G4LogicalVolume *w)
@@ -359,6 +361,7 @@ void TS01_DetectorConstruction::add_wls_optics(void)
     mptWLSfiber->AddProperty("WLSABSLENGTH",photonEnergy,absWLSfiber,nEntries);
     mptWLSfiber->AddProperty("WLSCOMPONENT",photonEnergy,emissionFib,nEntries);
     mptWLSfiber->AddConstProperty("WLSTIMECONSTANT", 0.5*ns);
+    // Change WLSTIMECONSTANT to 2.0 ns?
     
     polystyrene->SetMaterialPropertiesTable(mptWLSfiber);
     
