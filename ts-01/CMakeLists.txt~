@@ -1,7 +1,5 @@
 #----------------------------------------------------------------------------
 # Setup the project
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(ts_01)
 find_package(Geant4 REQUIRED ui_all vis_all)

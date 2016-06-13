@@ -1,0 +1,4 @@
+/run/initialize 
+#/tracking/verbose 2
+/control/execute ckov-01.mac
+/run/beamOn 25000
